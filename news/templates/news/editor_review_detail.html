@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Review Article</h2>
+
+  <div class="card">
+    <div class="card-header bg-light">
+      <h4 class="mb-0">{{ article.title }}</h4>
+    </div>
+    <div class="card-body">
+      <p class="text-muted">
+        <strong>Author:</strong> {{ article.author.username }} <br>
+        <strong>Created:</strong> {{ article.created_at|date:"M d, Y H:i" }}
+      </p>
+
+      <hr>
+
+      <p>{{ article.content|linebreaks }}</p>
+    </div>
+    <div class="card-footer text-end">
+      <form method="post" action="{% url 'approve_article' article.id %}" class="d-inline">
+        {% csrf_token %}
+        
+        <!-- 🔽 Publisher dropdown -->
+        <label for="publisher" class="form-label me-2">Assign Publisher:</label>
+        <select name="publisher_id" id="publisher" class="form-select d-inline w-auto">
+          {% for pub in publishers %}
+            <option value="{{ pub.id }}">{{ pub.name }}</option>
+          {% endfor %}
+        </select>
+
+        <button type="submit" class="btn btn-success ms-2">Approve</button>
+      </form>
+
+      <form method="post" action="{% url 'reject_article_editor' article.id %}" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Reject</button>
+      </form>
+      <a href="{% url 'editor_review_list' %}" class="btn btn-secondary">Back</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

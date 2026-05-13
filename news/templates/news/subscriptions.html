@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Subscribe to Journalists</h2>
+  <ul class="list-group mb-5">
+    {% for j in journalists %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ j.user.username }}</span>
+        <a href="{% url 'subscribe' journalist_id=j.id %}" class="btn btn-sm btn-primary">
+          Subscribe
+        </a>
+      </li>
+    {% empty %}
+      <li class="list-group-item">No journalists available.</li>
+    {% endfor %}
+  </ul>
+
+  <h2 class="mb-4">Subscribe to Publishers</h2>
+  <ul class="list-group">
+    {% for p in publishers %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ p.organization }}</span>
+        <a href="{% url 'subscribe' publisher_id=p.id %}" class="btn btn-sm btn-success">
+          Subscribe
+        </a>
+      </li>
+    {% empty %}
+      <li class="list-group-item">No publishers available.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
+

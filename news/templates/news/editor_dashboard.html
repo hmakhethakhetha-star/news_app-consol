@@ -1,0 +1,87 @@
+{{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Editor dashboard</h2>
+
+  <!-- Articles Awaiting Review -->
+  <h4>Articles Awaiting Review</h4>
+  {% if articles %}
+    <ul class="list-group mb-4">
+      {% for article in articles %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          {{ article.title }} by {{ article.author.username }}
+          <span>
+            <!-- Review button -->
+            <a href="{% url 'editor_review_detail' article.id %}" class="btn btn-sm btn-primary">Review</a>
+
+            <!-- Update button -->
+            <a href="{% url 'update_article' article.id %}" class="btn btn-sm btn-secondary">Update</a>
+
+            <!-- Delete button triggers modal -->
+            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ article.id }}">
+              Delete
+            </button>
+          </span>
+        </li>
+
+        <!-- Confirmation Modal -->
+        <div class="modal fade" id="deleteModal{{ article.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ article.id }}" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel{{ article.id }}">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Are you sure you want to delete <strong>{{ article.title }}</strong>?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{% url 'delete_article' article.id %}" method="post" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">No articles awaiting review.</p>
+  {% endif %}
+
+  <!-- Publisher Management -->
+  <h4>Publisher Management</h4>
+  <a href="{% url 'publisher_create' %}" class="btn btn-success mb-3">Add Publisher</a>
+
+  {% if publishers %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Manager</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for publisher in publishers %}
+        <tr>
+          <td>{{ publisher.name }}</td>
+          <td>{{ publisher.description }}</td>
+          <td>{{ publisher.manager.username }}</td>
+          <td>
+            <a href="{% url 'publisher_edit' publisher.id %}" class="btn btn-sm btn-secondary">Edit</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="text-muted">No publishers created yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
+
+

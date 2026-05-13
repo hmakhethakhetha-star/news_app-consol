@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <h2 class="mb-4">Reader Dashboard</h2>
+
+  <!-- Bootstrap Tabs -->
+  <ul class="nav nav-tabs" id="readerTabs" role="tablist">
+    <li class="nav-item"><button class="nav-link active" id="subscriptions-tab" data-bs-toggle="tab" data-bs-target="#subscriptions">My Subscriptions</button></li>
+    <li class="nav-item"><button class="nav-link" id="articles-tab" data-bs-toggle="tab" data-bs-target="#articles">Available Articles</button></li>
+    <li class="nav-item"><button class="nav-link" id="publishers-tab" data-bs-toggle="tab" data-bs-target="#publishers">Publishers</button></li>
+    <li class="nav-item"><button class="nav-link" id="journalists-tab" data-bs-toggle="tab" data-bs-target="#journalists">Journalists</button></li>
+    <li class="nav-item"><button class="nav-link" id="newsletters-tab" data-bs-toggle="tab" data-bs-target="#newsletters">Newsletters</button></li>
+  </ul>
+
+  <div class="tab-content mt-3" id="readerTabsContent">
+    <!-- Subscriptions -->
+    <div class="tab-pane fade show active" id="subscriptions" role="tabpanel">
+      <h4>Articles</h4>
+      {% if subscribed_articles %}
+        <ul class="list-group mb-3">
+          {% for article in subscribed_articles %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ article.title }}
+              <form method="post" action="{% url 'unsubscribe_article' article.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Unsubscribe</button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">No subscribed articles yet.</p>
+      {% endif %}
+
+      <h4>Publishers</h4>
+      {% if subscribed_publishers %}
+        <ul class="list-group mb-3">
+          {% for p in subscribed_publishers %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ p.name }}
+              <form method="post" action="{% url 'unsubscribe_publisher' p.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Unsubscribe</button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">No subscribed publishers yet.</p>
+      {% endif %}
+
+      <h4>Journalists</h4>
+      <ul class="list-group mb-3">
+        {% for j in journalists %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ j.user.username }}</span>
+            {% if j.user in subscribed_journalists %}
+              <form method="post" action="{% url 'unsubscribe_journalist' j.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Unsubscribe</button>
+              </form>
+            {% else %}
+              <form method="post" action="{% url 'subscribe_journalist' j.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-sm">Subscribe</button>
+              </form>
+            {% endif %}
+          </li>
+        {% empty %}
+          <li class="list-group-item">No journalists available.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+
+    <!-- Articles -->
+    <div class="tab-pane fade" id="articles" role="tabpanel">
+      <div class="row">
+        {% for article in all_articles %}
+          <div class="col-md-6 mb-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">{{ article.title }}</h5>
+                <p class="card-text">{{ article.content|truncatewords:30 }}</p>
+                {% if article in subscribed_articles %}
+                  <span class="badge bg-success">Subscribed</span>
+                {% else %}
+                  <form method="post" action="{% url 'subscribe_article' article.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-sm">Subscribe</button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <p class="text-muted">No articles available.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Publishers -->
+    <div class="tab-pane fade" id="publishers" role="tabpanel">
+      <ul class="list-group">
+        {% for p in publishers %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ p.name }}</span>
+            {% if p in subscribed_publishers %}
+              <form method="post" action="{% url 'unsubscribe_publisher' p.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Unsubscribe</button>
+              </form>
+            {% else %}
+              <form method="post" action="{% url 'subscribe_publisher' p.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success btn-sm">Subscribe</button>
+              </form>
+            {% endif %}
+          </li>
+        {% empty %}
+          <li class="list-group-item">No publishers available.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Journalists -->
+    <div class="tab-pane fade" id="journalists" role="tabpanel">
+      <ul class="list-group">
+        {% for j in journalists %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ j.user.username }}</span>
+            {% if j.user in subscribed_journalists %}
+              <form method="post" action="{% url 'unsubscribe_journalist' j.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Unsubscribe</button>
+              </form>
+            {% else %}
+              <form method="post" action="{% url 'subscribe_journalist' j.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-sm">Subscribe</button>
+              </form>
+            {% endif %}
+          </li>
+        {% empty %}
+          <li class="list-group-item">No journalists available.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Newsletters -->
+    <div class="tab-pane fade" id="newsletters" role="tabpanel">
+      <div class="row">
+        {% for newsletter in newsletters %}
+          <div class="col-md-6 mb-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">{{ newsletter.title }}</h5>
+                <p class="card-text">{{ newsletter.content|truncatewords:30 }}</p>
+                <small class="text-muted">Published on {{ newsletter.updated_at|date:"Y-m-d" }}</small>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <p class="text-muted">No newsletters available.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

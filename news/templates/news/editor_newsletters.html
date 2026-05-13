@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>All Newsletters</h2>
+  {% if newsletters %}
+    <table class="table table-striped">
+      <thead><tr><th>Title</th><th>Author</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for newsletter in newsletters %}
+        <tr>
+          <td>{{ newsletter.title }}</td>
+          <td>{{ newsletter.author.username }}</td>
+          <td>{{ newsletter.status }}</td>
+          <td>{{ newsletter.updated_at|date:"Y-m-d" }}</td>
+          <td>
+            <a href="{% url 'editor_edit_newsletter' newsletter.id %}" class="btn btn-sm btn-secondary">Update</a>
+            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ newsletter.id }}">Delete</button>
+          </td>
+        </tr>
+        <!-- Delete Modal -->
+        <div class="modal fade" id="deleteModal{{ newsletter.id }}" tabindex="-1">
+          <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Confirm Delete</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">Delete <strong>{{ newsletter.title }}</strong>?</div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <form action="{% url 'editor_delete_newsletter' newsletter.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Yes, Delete</button>
+              </form>
+            </div>
+          </div></div>
+        </div>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="text-muted">No newsletters available.</p>
+  {% endif %}
+</div>
+{% endblock %}
