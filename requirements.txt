@@ -5,3 +5,5 @@ django-environ==0.13.0
 djangorestframework==3.17.1
 djangorestframework_simplejwt==5.5.1
 tweepy==4.16.0
+Pillow==10.3.0
+python-dotenv==1.0.1
