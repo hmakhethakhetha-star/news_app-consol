@@ -44,3 +44,12 @@ docker run -p 8000:8000 django-capstone
 Documentation is generated using Sphinx and stored in the docs/ folder.
 To regenerate: make html
 
+## Database Connector
+
+This project uses **mysqlclient** as the database connector for MariaDB/MySQL.  
+Ensure it is installed via `requirements.txt`:
+
+```bash
+pip install -r requirements.txt
+
+
