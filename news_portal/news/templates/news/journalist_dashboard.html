@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-3">My Articles</h2>
+
+<a href="/journalist/article/create/" class="btn btn-success mb-3">Create New Article</a>
+
+{% if articles %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Updated</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+                <tr>
+                    <td>{{ article.title }}</td>
+                    <td>
+                        {% if article.status == "submitted" %}
+                            <span class="badge bg-info">Submitted</span>
+                        {% elif article.status == "editor_approved" %}
+                            <span class="badge bg-success">Editor Approved</span>
+                        {% elif article.status == "published" %}
+                            <span class="badge bg-primary">Published</span>
+                        {% elif article.status == "rejected" %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% else %}
+                            <span class="badge bg-warning">Draft</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ article.updated_at|date:"Y-m-d" }}</td>
+                    <td>
+                        <!-- Edit button (optional, remove if journalists shouldn't edit) -->
+                        <a href="/journalist/article/{{ article.id }}/edit/" class="btn btn-sm btn-primary">Edit</a>
+
+                        {% if article.status == "draft" %}
+                            <form method="post" action="{% url 'submit_article' article.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-success">Submit</button>
+                            </form>
+                        {% endif %}
+
+                        <!-- Delete button triggers modal -->
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ article.id }}">
+                          Delete
+                        </button>
+
+                        <!-- Confirmation Modal -->
+                        <div class="modal fade" id="deleteModal{{ article.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ article.id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel{{ article.id }}">Confirm Delete</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                Are you sure you want to delete <strong>{{ article.title }}</strong>?
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <form action="{% url 'delete_article' article.id %}" method="post" style="display:inline;">
+                                  {% csrf_token %}
+                                  <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>You haven't written any articles yet.</p>
+{% endif %}
+{% endblock %}
+
+

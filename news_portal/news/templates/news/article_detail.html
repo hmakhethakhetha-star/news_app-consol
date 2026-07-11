@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ article.title }}</h2>
+
+<p class="text-muted">
+    By {{ article.author.username }}
+    {% if article.publisher %}
+        | Publisher: {{ article.publisher.name }}
+    {% endif %}
+    | {{ article.created_at|date:"Y-m-d H:i" }}
+</p>
+
+<div class="mt-4">
+    {{ article.content|linebreaks }}
+</div>
+
+<a href="/" class="btn btn-secondary mt-3">Back</a>
+{% endblock %}

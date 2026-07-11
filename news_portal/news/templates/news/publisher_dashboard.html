@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Publisher Dashboard</h2>
+
+  {% if messages %}
+    <div class="mb-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if articles %}
+    <div class="row">
+      {% for article in articles %}
+        <div class="col-md-6 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ article.title }}</h5>
+              <p class="card-text">{{ article.content|truncatewords:30 }}</p>
+              <p class="text-muted">By {{ article.author.username }}</p>
+            </div>
+            <div class="card-footer text-end">
+              <a href="{% url 'article_detail' article.id %}" class="btn btn-primary btn-sm">View Details</a>
+              <form method="post" action="{% url 'publish_article' article.id %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success btn-sm">Publish</button>
+              </form>
+              <form method="post" action="{% url 'reject_article_publisher' article.id %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">No editor-approved articles awaiting publishing.</p>
+  {% endif %}
+</div>
+{% endblock %}

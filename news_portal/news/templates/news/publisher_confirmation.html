@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Publisher Created Successfully</h2>
+  <p><strong>Publisher:</strong> {{ publisher.name }}</p>
+  <p><strong>Manager Username:</strong> {{ username }}</p>
+  <p><strong>Manager Password:</strong> {{ password }}</p>
+
+  <p class="text-muted">
+    Please provide these credentials to the publisher manager so they can log in at 
+    <a href="/login/">/login/</a>.
+  </p>
+
+  <a href="{% url 'publisher_list' %}" class="btn btn-primary">Back to Publisher List</a>
+</div>
+{% endblock %}

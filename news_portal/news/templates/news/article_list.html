@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-3">Latest Articles</h2>
+
+<div class="row">
+    {% for article in articles %}
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5>{{ article.title }}</h5>
+                    <p class="text-muted">
+                        By {{ article.author.username }}
+                        {% if article.publisher %}
+                            | {{ article.publisher.name }}
+                        {% endif %}
+                    </p>
+                    <a href="/article/{{ article.id }}/" class="btn btn-primary btn-sm">Read More</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
