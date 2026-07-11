@@ -11,3 +11,5 @@ __pycache__/
 *.egg
 *.db
 *.DS_Store
+# Ignore Sphinx build output
+docs/_build/

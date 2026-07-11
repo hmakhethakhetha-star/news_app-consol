@@ -102,13 +102,14 @@ DATABASES = {
         'NAME': 'newsapp_db',                   # database name
         'USER': 'newsapp_user',                 # MariaDB username
         'PASSWORD': 'your_password',            # MariaDB password
-        'HOST': '127.0.0.1',                    # or 'localhost'
+        'HOST': 'host.docker.internal',         # 👈 Required when using Docker
         'PORT': '3306',                         # default MariaDB/MySQL port
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
     }
 }
+
 
 
 # Password validation
